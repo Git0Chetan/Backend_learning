@@ -1,5 +1,7 @@
 const User=require("../models/userModel");
 const bcrypt=require("bcrypt");
+const nodemailer=require("nodemailer");
+
 
 const securePassword=async(password)=>{
     try{
@@ -10,6 +12,39 @@ const securePassword=async(password)=>{
         console.log(error.message);
     }
 }
+
+const sendVerifyMail=async(name,email,userid)=>{
+    try{
+        const transporter=nodemailer.createTransport({
+            host:'smtp.gmail.com',
+            port:587,
+            secure:false,
+            requireTLS:true,
+            auth:{
+                user:'silentknight7767@gmail.com',
+                pass:'mqbqlayhxkydgzyd'
+            }
+        });
+
+        const mailoptions={
+            from: 'silenknight7767@gmail.com',
+            to:email,
+            subject:"For Verfication Mail",
+            html:'<p> Hii '+name+' , please click here to <a href="http://127.0.0.1:3000/verify?id='+userid+'">Verfiy</a>Your mail</p>'
+        }
+        transporter.sendMail(mailoptions,function(error,info){
+            if(error){
+                console.log(error);
+            }
+            else{
+                console.log("Email has been Sent: - ",info.response);
+            }
+        })
+    }
+    catch(error){
+        console.log(error.message);
+    }
+};
 
 const loadRegister = async(req,res)=>{
     try{
@@ -35,6 +70,7 @@ const insertUser=async(req,res)=>{
 
         const userdata=await user.save();
         if(userdata){
+            sendVerifyMail(req.body.name,req.body.email,userdata._id);
             res.render('registration',{message:"Your registration has been Successfully,please Verify your mail"});
         }
         else{
@@ -46,7 +82,20 @@ const insertUser=async(req,res)=>{
     }
 }
 
+const verifyMail=async(req,res)=>{
+    try{
+        const updateInfo=await User.updateOne({_id:req.query.id},{$set:{is_varified:1}});
+
+        console.log(updateInfo);
+        res.render("email_verify");
+    }
+    catch(err){
+        console.log(err.message);
+    }
+}
+
 module.exports={
     loadRegister,
-    insertUser
+    insertUser,
+    verifyMail
 }
