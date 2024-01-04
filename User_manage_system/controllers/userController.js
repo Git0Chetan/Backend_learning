@@ -94,8 +94,62 @@ const verifyMail=async(req,res)=>{
     }
 }
 
+
+//Login user 
+const loginLoad=async(req,res)=>{
+    try{
+        res.render('login');
+    }
+    catch(error){
+        console.log(error.message);
+    }
+}
+
+const verifyLogin=async(req,res)=>{
+    try{
+        const Email=req.body.email;
+        const password=req.body.password;
+
+        const userdata=await User.findOne({email:Email})
+
+        if(userdata){
+            const passMatch=await bcrypt.compare(password,userdata.password);
+            if(passMatch){
+                if(userdata.is_varified === 0){
+                    res.render('login',{message:"Please Verify your Email"});
+                }
+                else{
+                    req.session.user_id=userdata._id;
+                    res.redirect('/home');
+                }
+            }
+            else{
+                res.render('login',{message:"Email and Password is incorrect "});
+            }
+        }
+        else{
+            res.render('login',{message:"Email and Password is incorrect "});
+        }
+    }
+    catch(err){
+        console.log(err.message);
+    }
+}
+
+const loadHome=async(req,res)=>{
+    try{
+        res.render('home');
+    }
+    catch(error){
+        console.log(error.message);
+    }
+}
+
 module.exports={
     loadRegister,
     insertUser,
-    verifyMail
+    verifyMail,
+    loginLoad,
+    verifyLogin,
+    loadHome
 }
