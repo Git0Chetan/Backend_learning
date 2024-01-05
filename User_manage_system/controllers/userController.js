@@ -139,11 +139,23 @@ const verifyLogin=async(req,res)=>{
 const loadHome=async(req,res)=>{
     try{
         res.render('home');
+        res.redirect('/');
     }
     catch(error){
         console.log(error.message);
     }
 }
+
+const userLogout=async(req,res)=>{
+    try{
+        req.session.destroy();
+        res.redirect('/');
+    }
+    catch(error){
+        console.log(error.message);
+    }
+}
+
 
 module.exports={
     loadRegister,
@@ -151,5 +163,6 @@ module.exports={
     verifyMail,
     loginLoad,
     verifyLogin,
-    loadHome
+    loadHome,
+    userLogout
 }
