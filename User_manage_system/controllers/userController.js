@@ -174,7 +174,8 @@ const verifyLogin=async(req,res)=>{
 
 const loadHome=async(req,res)=>{
     try{
-        res.render('home');
+        const user_data=await User.findById({_id:req.session.user_id});
+        res.render('home',{user:user_data});
     }
     catch(error){
         console.log(error.message);
@@ -259,6 +260,39 @@ const resetPassword=async(req,res)=>{
     }
 }
 
+//User profile edit and update
+const editLoad =async(req,res)=>{
+    try{
+        const id=req.query.id;
+        const userData=await User.findById({_id:id});
+
+        if(userData){
+            res.render('edit',{user:userData});
+        }
+        else{
+            res.redirect('/home');
+        }
+    }
+    catch(error){
+        console.log(error.message);
+    }
+}
+
+const updateProfile= async(req,res)=>{
+    try{
+        if(req.file){
+            const Data=await User.findByIdAndUpdate({_id:req.body.user_id},{$set:{name:req.body.name,email:req.body.email,mobile:req.body.mobile,image:req.file.filename}});
+        }
+        else{
+            const Data=await User.findByIdAndUpdate({_id:req.body.user_id},{$set:{name:req.body.name,email:req.body.email,mobile:req.body.mobile}});
+        }
+
+        res.redirect('/home');
+    }
+    catch(error){
+        console.log(error.message);
+    }
+}
 
 module.exports={
     loadRegister,
@@ -271,5 +305,7 @@ module.exports={
     forgetLoad,
     forgetVerify,
     forgetPassLoad,
-    resetPassword
+    resetPassword,
+    editLoad,
+    updateProfile
 }

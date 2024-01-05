@@ -2,6 +2,26 @@
 
 <h1>Welcome to Home page </h1>
 
+<table width="60%">
+    <tr>
+        <td><img src="userImages/<%= user.image %>" width="100px" height="100px" alt="UserImage"></td>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td><%= user.name %></td>
+    </tr>
+    <tr>
+        <td>Mobile</td>
+        <td><%= user.mobile %></td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td><%= user.email %></td>
+    </tr>
+</table>
+<br><br>
+<a href="/edit?id=<%=user._id%>">Edit Profile</a>
+<br>    
 <a href="/logout">Logout</a>
 
 <% include('../layouts/footer.ejs') %>

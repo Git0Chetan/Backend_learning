@@ -9,6 +9,8 @@ const auth=require('../middleware/auth');
 user_route.set('view engine','ejs');
 user_route.set('views','./views/users');
 
+user_route.use(express.static('public'));
+
 const bodyParser=require("body-parser");
 user_route.use(bodyParser.json());
 user_route.use(bodyParser.urlencoded({extended:true}));
@@ -42,5 +44,7 @@ user_route.get('/forget',auth.isLogout,userController.forgetLoad);
 user_route.post('/forget',userController.forgetVerify);
 user_route.get('/forgetPass',auth.isLogout,userController.forgetPassLoad);
 user_route.post('/forgetPass',userController.resetPassword);
+user_route.get('/edit',auth.isLogin,userController.editLoad);
+user_route.post('/edit',upload.single('image'),userController.updateProfile);
 
 module.exports=user_route;
