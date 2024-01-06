@@ -24,6 +24,7 @@ admin_route.get('/forget',auth.isLogout,adminController.forgetLoad);
 admin_route.get('/forget',adminController.forgetVerify);
 admin_route.get('/forgetPass',adminController.forgetpassLoad);
 admin_route.get('/forgetPass',adminController.resetPassLoad);
+admin_route.get('/dashboard',auth.isLogin,adminController.adminDashboard);
 
 admin_route.get('*',function(req,res){
     res.redirect('/admin');

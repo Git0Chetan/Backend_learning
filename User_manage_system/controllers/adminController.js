@@ -177,6 +177,16 @@ const resetPassLoad=async(req,res)=>{
     }
 }
 
+const adminDashboard=async(req,res)=>{
+    try{
+        const userdata=await User.find({is_admin:0});
+        res.render('dashboard',{users:userdata});
+    }
+    catch(error){
+        console.log(error.message);
+    }
+}
+
 
 module.exports={
     loadLogin,
@@ -186,5 +196,6 @@ module.exports={
     forgetLoad,
     forgetVerify,
     forgetpassLoad,
-    resetPassLoad
+    resetPassLoad,
+    adminDashboard
 } 

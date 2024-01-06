@@ -1,0 +1,53 @@
+<% include('../layouts/header.ejs') %>
+
+<h1>Admin Dashboard</h1>
+
+<p></p>
+<table width="50%">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Mobile</th>
+        <th>Image</th>
+        <th>Verified</th>
+    </tr>
+
+    <% 
+        if(users.length>0){
+            for(let i=0;i<users.length;i++){
+                %>
+                <tr>
+                    <td><%=users[i].name%></td>
+                    <td><%=users[i].email%></td>
+                    <td><%=users[i].mobile%></td>
+                    <td><img src="/userImages/<%=users[i].image%>" width="100px" height="100px" alt="Not found"></td>
+                    <td><%
+                        if(users[i].is_varified==0){
+                            %>
+                                <p>Not Varified</p>
+                            <%
+                        }
+                        else{
+                            %>
+                                <p>Varified</p>
+                            <%
+                        }
+                    %></td>
+                </tr>
+                <%
+            }
+
+        }
+        else{
+            %>
+                <tr>
+                    <td colspan="5"> User Not found </td>
+                </tr>
+            <%
+        }
+    %>
+</table>
+
+<a href="/admin/home">Go to Home</a>
+
+<% include('../layouts/footer.ejs') %>
