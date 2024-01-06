@@ -1,0 +1,30 @@
+
+<% include('../layouts/header.ejs') %>
+
+<h1>Edit User <%= user.name %> </h1>
+
+<img src="userImages/<%= user.image %>" width="100px" height="100px" alt="UserImage">
+
+<form action="" method="post">
+    <input type="hidden" name="id" value="<%= user._id %>">
+
+    <input type="text" placeholder="Enter Name"  value="<%= user.name %>" name="name" required>
+    <br><br>
+    <input type="email" placeholder="Enter email" value="<%= user.email %>" name="email" required>
+    <br><br>
+    <input type="text" placeholder="Enter mobile" value="<%= user.mobile %>" name="mobile" required>
+    <br><br>
+    <label>Verified</label>
+    <input type="radio" name="verify" value="1" <% if(user.is_varified==1){%>checked <%} %> >
+    <br><br>
+    <label>UnVerified</label>
+    <input type="radio" name="verify" value="0"  <% if(user.is_varified==0){%>checked <%} %>>
+    <br><br>
+    <input type="submit" value="Update User">
+    <br><br>
+</form>
+
+
+<a href="/admin/">Go to Dashboard</a>
+
+<% include('../layouts/footer.ejs') %>

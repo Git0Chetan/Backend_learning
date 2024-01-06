@@ -2,6 +2,9 @@
 
 <h1>Admin Dashboard</h1>
 
+<a href="/admin/new_user">Add New User</a>
+<br><br>
+
 <p></p>
 <table width="50%">
     <tr>
@@ -10,6 +13,7 @@
         <th>Mobile</th>
         <th>Image</th>
         <th>Verified</th>
+        <th>Actions</th>
     </tr>
 
     <% 
@@ -33,6 +37,10 @@
                             <%
                         }
                     %></td>
+                    <td> 
+                        <a href="/admin/edituser?id=<%=users[i]._id%>">Edit</a>
+                        <a href="/admin/deleteuser?id=<%=users[i]._id%>">Delete</a>
+                    </td>
                 </tr>
                 <%
             }

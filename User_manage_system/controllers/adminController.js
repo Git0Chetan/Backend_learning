@@ -18,6 +18,39 @@ const securePassword=async(password)=>{
     }
 }
 
+const addUserMail=async(name,email,password,userid)=>{
+    try{
+        const transporter=nodemailer.createTransport({
+            host:'smtp.gmail.com',
+            port:587,
+            secure:false,
+            requireTLS:true,
+            auth:{
+                user:process.env.Email,
+                pass: process.env.EmailPass
+            }
+        });
+
+        const mailoptions={
+            from: process.env.Email,
+            to:email,
+            subject:"Admin added you and please Verify",
+            html:'<p> Hii '+name+' , please click here to <a href="http://127.0.0.1:3000/verify?id='+userid+'">Verify</a>Your mail</p> <br><b>user_id : </b>'+email+'<br><b>Password: </b>'+password+'<br>'
+        }
+        transporter.sendMail(mailoptions,function(error,info){
+            if(error){
+                console.log(error);
+            }
+            else{
+                console.log("Email has been Sent: - ",info.response);
+            }
+        })
+    }
+    catch(error){
+        console.log(error.message);
+    }
+};
+
 const loadLogin=async(req,res)=>{
     try{
         res.render('loginview');
@@ -187,6 +220,89 @@ const adminDashboard=async(req,res)=>{
     }
 }
 
+const newuserLoad=async(req,res)=>{
+    try{
+        res.render('new_user');
+    }
+    catch(error){
+        console.log(error.message);
+    }
+}
+
+const adduser=async(req,res)=>{
+    try{
+        const name=req.body.name;
+        const email=req.body.email;
+        const mobile=req.body.mobile;
+        const image=req.file.filename;
+        const password=randomS.generate(8);
+        const secpass=await securePassword(password);
+
+        const user=new User({
+            name:name,
+            email:email,
+            mobile:mobile,
+            image:image,
+            password:secpass,
+            is_admin:0
+        });
+
+        const userData=await user.save();
+
+        if(userData){
+            await addUserMail(name,email,password,userData._id);
+            res.redirect('/admin/dashboard');
+        }
+        else{
+            res.render('new_user',{message:"Something Went Wrong"});
+        }
+    }
+    catch(error){
+        error.message;
+    }
+}
+
+const edituserLoad=async(req,res)=>{
+    try{
+        const id=req.query.id;
+        const data= await User.findById({_id:id});
+
+        if(data){
+            res.render('edituser',{user:data});
+        }
+        else{
+            res.redirect('/admin/dashboard');
+        }
+        
+    }
+    catch(error){
+        console.log(error.message);
+    }
+};
+
+const updateUser= async(req,res)=>{
+    try{
+        const Data=await User.findByIdAndUpdate({_id:req.body.id},{$set:{name:req.body.name,email:req.body.email,mobile:req.body.mobile,is_varified:req.body.verify}});
+        res.redirect('/admin/dashboard');
+        
+    }
+    catch(error){
+        console.log(error.message);
+    }
+}
+
+const deleteuser=async(req,res)=>{
+    try{
+        const id=req.query.id;
+        const data=await User.deleteOne({_id:id});
+        res.redirect('/admin/dashboard');
+    }
+    catch(error){
+        console.log(error.message);
+    }
+}
+
+
 
 module.exports={
     loadLogin,
@@ -197,5 +313,10 @@ module.exports={
     forgetVerify,
     forgetpassLoad,
     resetPassLoad,
-    adminDashboard
+    adminDashboard,
+    newuserLoad,
+    adduser,
+    edituserLoad,
+    updateUser,
+    deleteuser
 } 
